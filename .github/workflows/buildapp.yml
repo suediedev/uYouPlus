@@ -1,9 +1,8 @@
-# Original idea by @ISnackable. Thanks to him for handling the hardest parts!
-# https://github.com/ISnackable/CercubePlus/blob/main/.github/workflows/Build.yml
-
 name: Build and Release uYouPlus
 
 on:
+  schedule:
+    - cron: '0 0 5 11 *'  # This runs at midnight on November 5th every year
   workflow_dispatch:
     inputs:
       uyou_version:
@@ -121,7 +120,6 @@ jobs:
           echo "==> YouTube v$youtube_version downloaded!"
           sed -i '' "17s#.*#YOUTUBE_VERSION = ${youtube_version}#g" Makefile
           echo "youtube_version=${youtube_version}" >> $GITHUB_OUTPUT
-
         env:
           THEOS: ${{ github.workspace }}/theos
           YOUTUBE_URL: ${{ inputs.decrypted_youtube_url }}
@@ -137,7 +135,6 @@ jobs:
           echo "package=$(ls -t packages | head -n1)" >>$GITHUB_OUTPUT
           echo -e "==> \033[1mSHASUM256: $(shasum -a 256 packages/*.ipa | cut -f1 -d' ')\033[0m"
           echo -e "==> \033[1mBundle ID: ${{ env.BUNDLE_ID }}\033[0m"
-
         env:
           THEOS: ${{ github.workspace }}/theos
           UYOU_VERSION: ${{ inputs.uyou_version }}
